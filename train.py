@@ -2,7 +2,9 @@ import argparse
 import math
 import h5py
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
 import socket
 import importlib
 import os
@@ -60,9 +62,9 @@ HOSTNAME = socket.gethostname()
 
 # ModelNet40 official train/test split
 TRAIN_FILES = provider.getDataFiles( \
-    os.path.join(BASE_DIR, 'data/modelnet40_ply_hdf5_2048/train_files.txt'))
+    os.path.join(BASE_DIR, 'data\\modelnet40_ply_hdf5_2048\\train_files.txt'))
 TEST_FILES = provider.getDataFiles(\
-    os.path.join(BASE_DIR, 'data/modelnet40_ply_hdf5_2048/test_files.txt'))
+    os.path.join(BASE_DIR, 'data\\modelnet40_ply_hdf5_2048\\test_files.txt'))
 
 def log_string(out_str):
     LOG_FOUT.write(out_str+'\n')
@@ -81,7 +83,7 @@ def get_learning_rate(batch):
     return learning_rate        
 
 def get_bn_decay(batch):
-    bn_momentum = tf.train.exponential_decay(
+    bn_momentum = tf.compat.v1.train.exponential_decay(
                       BN_INIT_DECAY,
                       batch*BATCH_SIZE,
                       BN_DECAY_DECAY_STEP,
@@ -94,7 +96,7 @@ def train():
     with tf.Graph().as_default():
         with tf.device('/gpu:'+str(GPU_INDEX)):
             pointclouds_pl, labels_pl = MODEL.placeholder_inputs(BATCH_SIZE, NUM_POINT)
-            is_training_pl = tf.placeholder(tf.bool, shape=())
+            is_training_pl = tf.compat.v1.placeholder(tf.bool, shape=())
             print(is_training_pl)
             
             # Note the global_step=batch parameter to minimize. 
@@ -102,6 +104,8 @@ def train():
             batch = tf.Variable(0)
             bn_decay = get_bn_decay(batch)
             tf.summary.scalar('bn_decay', bn_decay)
+            print('pointclouds_pl : \n')
+            print(pointclouds_pl)
 
             # Get model and loss 
             pred, end_points = MODEL.get_model(pointclouds_pl, is_training_pl, bn_decay=bn_decay)
