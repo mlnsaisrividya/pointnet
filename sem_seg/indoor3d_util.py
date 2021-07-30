@@ -48,8 +48,11 @@ def collect_point_label(anno_path, out_filename, file_format='txt'):
         the points are shifted before save, the most negative point is now at origin.
     """
     points_list = []
-    
+    sri = os.path.join(anno_path, '*.txt')
+    print(sri)
+    print('before for loop')
     for f in glob.glob(os.path.join(anno_path, '*.txt')):
+        print('after for loop')
         cls = os.path.basename(f).split('_')[0]
         if cls not in g_classes: # note: in some room there is 'staris' class..
             cls = 'clutter'
@@ -57,6 +60,7 @@ def collect_point_label(anno_path, out_filename, file_format='txt'):
         labels = np.ones((points.shape[0],1)) * g_class2label[cls]
         points_list.append(np.concatenate([points, labels], 1)) # Nx7
     
+    print('lop ended')
     data_label = np.concatenate(points_list, 0)
     xyz_min = np.amin(data_label, axis=0)[0:3]
     data_label[:, 0:3] -= xyz_min

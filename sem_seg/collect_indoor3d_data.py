@@ -14,6 +14,7 @@ if not os.path.exists(output_folder):
 
 # Note: there is an extra character in the v1.2 data in Area_5/hallway_6. It's fixed manually.
 for anno_path in anno_paths:
+    anno_path = anno_path.replace('\\','/')
     print(anno_path)
     try:
         elements = anno_path.split('/')

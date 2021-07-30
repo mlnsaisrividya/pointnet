@@ -1,0 +1,2 @@
+indoor3d_sem_seg_hdf5_data/ply_data_all_7.h5
+indoor3d_sem_seg_hdf5_data/ply_data_all_0.h5
